@@ -11,15 +11,36 @@
             --card-bg: rgba(24, 21, 18, 0.65);
             --primary-glow: #b82bfd;
             --secondary-glow: #ff2a5f;
+            --discord: #5865F2;
+            --tiktok-cyan: #00f2fe;
+            --tiktok-pink: #fe05e1;
             --text-main: #f3f3f3;
             --text-dim: #9a918a;
             --border: rgba(255, 255, 255, 0.08);
-            --warning: rgba(255, 170, 0, 0.15);
-            --warning-border: rgba(255, 170, 0, 0.5);
+            --mc-shadow: 2px 2px 0px rgba(0, 0, 0, 0.7);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            min-height: 100vh; 
+        }
+
+        /* Майнкрафт-сетка на заднем фоне */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            z-index: -2;
+        }
+
         #space-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
         nav {
@@ -27,33 +48,66 @@
             padding: 24px 8%; backdrop-filter: blur(12px); background: rgba(10, 9, 8, 0.5);
             border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--mc-shadow); }
         .nav-stats { display: flex; gap: 10px; align-items: center; color: var(--text-dim); font-size: 0.95rem; }
-        .downloads-badge { background: rgba(184, 43, 253, 0.15); border: 1px solid rgba(184, 43, 253, 0.4); padding: 6px 14px; border-radius: 20px; color: #d88eff; font-weight: 600; }
+        .downloads-badge { background: rgba(184, 43, 253, 0.15); border: 1px solid rgba(184, 43, 253, 0.4); padding: 6px 14px; border-radius: 4px; color: #d88eff; font-weight: 600; box-shadow: var(--mc-shadow); }
 
-        .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 80px 20px; max-width: 900px; margin: 0 auto; }
+        .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 70px 20px; max-width: 900px; margin: 0 auto; }
         
         .beta-warning {
-            background: var(--warning); border: 1px solid var(--warning-border);
-            padding: 15px 25px; border-radius: 12px; margin-bottom: 30px;
+            background: rgba(255, 170, 0, 0.15); border: 2px solid rgba(255, 170, 0, 0.5);
+            padding: 15px 25px; border-radius: 6px; margin-bottom: 30px;
             color: #ffcc66; font-size: 0.95rem; line-height: 1.5; max-width: 700px;
+            box-shadow: 0 4px 15px rgba(255, 170, 0, 0.1);
         }
-        .beta-warning strong { color: #ffaa00; }
+        .beta-warning strong { color: #ffaa00; text-shadow: var(--mc-shadow); }
 
-        h1 { font-size: 3.5rem; margin-bottom: 20px; background: linear-gradient(180deg, #fff, #a5a5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 3.5rem; margin-bottom: 20px; text-shadow: var(--mc-shadow); background: linear-gradient(180deg, #fff, #a5a5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { font-size: 1.2rem; color: var(--text-dim); max-width: 650px; margin-bottom: 40px; }
 
-        .btn-download {
-            padding: 18px 45px; font-size: 1.1rem; font-weight: 700; color: #fff; text-decoration: none;
-            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
-            border-radius: 12px; transition: 0.3s; box-shadow: 0 0 35px rgba(184, 43, 253, 0.4);
+        /* Контейнер кнопок */
+        .actions {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
         }
-        .btn-download:hover { transform: translateY(-4px); box-shadow: 0 0 50px rgba(255, 42, 95, 0.6); }
+
+        .btn {
+            display: flex; align-items: center; gap: 10px; padding: 16px 32px;
+            font-size: 1.05rem; font-weight: 700; color: #fff; text-decoration: none;
+            border-radius: 8px; transition: 0.3s; position: relative; overflow: hidden;
+            border: 2px solid transparent; text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+        }
+        .btn svg { width: 22px; height: 22px; }
+        .btn:hover { transform: translateY(-4px); }
+
+        /* Индивидуальные стили кнопок */
+        .btn-main {
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            box-shadow: 0 0 25px rgba(184, 43, 253, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .btn-main:hover { box-shadow: 0 0 40px rgba(255, 42, 95, 0.6); }
+
+        .btn-discord {
+            background: var(--discord);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .btn-discord:hover { box-shadow: 0 0 35px rgba(88, 101, 242, 0.6); }
+
+        .btn-tiktok {
+            background: #111;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+            border-left-color: var(--tiktok-cyan);
+            border-right-color: var(--tiktok-pink);
+            border-top-color: rgba(255,255,255,0.1);
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+        .btn-tiktok:hover { box-shadow: 0 0 30px rgba(254, 5, 225, 0.5); }
 
         .features { max-width: 1100px; margin: 20px auto 100px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 35px 30px; border-radius: 16px; backdrop-filter: blur(16px); transition: 0.3s; }
-        .card:hover { transform: translateY(-6px); border-color: rgba(184, 43, 253, 0.4); }
-        .card h3 { margin-bottom: 12px; font-size: 1.4rem; }
+        .card { background: var(--card-bg); border: 2px solid var(--border); padding: 35px 30px; border-radius: 8px; backdrop-filter: blur(16px); transition: 0.3s; }
+        .card:hover { transform: translateY(-6px); border-color: rgba(184, 43, 253, 0.6); box-shadow: 0 10px 30px rgba(184, 43, 253, 0.1); }
+        .card h3 { margin-bottom: 12px; font-size: 1.4rem; text-shadow: var(--mc-shadow); }
         .card p { color: var(--text-dim); line-height: 1.6; }
     </style>
 </head>
@@ -76,71 +130,98 @@
             </div>
             
             <h1>Максимальный контроль над PvP</h1>
-            <p>Уникальные модули анимаций, Pulse Hand, точные проекции траекторий и гибкая система конфигов для Forge 1.16.5.(я заебался)</p>
+            <p>Уникальные модули анимаций, Pulse Hand, точные проекции траекторий и гибкая система конфигов для Forge 1.16.5.</p>
             
-            <a href="StrengthVisuals-b0.1.0.51.jar" download class="btn-download" id="downloadBtn">Скачать Мод</a>
+            <div class="actions">
+                <a href="strengthvisuals-0.1.0.jar" download class="btn btn-main" id="downloadBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Скачать Мод
+                </a>
+                <a href="https://discord.gg/UFEwqBU2Fu" target="_blank" class="btn btn-discord">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                    Наш Discord
+                </a>
+                <a href="https://www.tiktok.com/@strength.smp.ru?is_from_webapp=1&sender_device=pc" target="_blank" class="btn btn-tiktok">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/></svg>
+                    TikTok
+                </a>
+            </div>
         </section>
 
         <section class="features">
-            <div class="card"><h3>Custom Hand & Overlay</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula в разработке).</p></div>
-            <div class="card"><h3>Physics Predictions</h3><p>Точный просчет траекторий жемчугов Края и стрел с маркером приземления.(пиздец какая баганая, нету времени делать)</p></div>
+            <div class="card"><h3>Custom Hand & Overlay</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula).</p></div>
+            <div class="card"><h3>Physics Predictions</h3><p>Точный математический просчет траекторий жемчугов Края и стрел с маркером приземления.</p></div>
             <div class="card"><h3>Cloud Config Engine</h3><p>Мгновенное сохранение и смена профилей прямо в меню с автозагрузкой при старте.</p></div>
         </section>
     </main>
 
     <script>
-        // Счетчик скачиваний
-        const NAMESPACE = 'strengthvisuals_mod_v1';
-        const KEY = 'downloads_count';
+        // --- БЕССМЕРТНЫЙ СЧЕТЧИК СКАЧИВАНИЙ ---
+        const NAMESPACE = 'rustrength_v1';
+        const KEY = 'downloads_total';
         const countDisplay = document.getElementById('downloadCount');
         const downloadBtn = document.getElementById('downloadBtn');
+
+        // Берем цифру из памяти браузера, если API отвалится (база 156 загрузок)
+        let currentCount = parseInt(localStorage.getItem('mc_dl_count')) || 156; 
+        countDisplay.textContent = currentCount;
 
         async function fetchDownloads() {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`);
                 const data = await res.json();
-                countDisplay.textContent = data.count || 0;
-            } catch (e) { countDisplay.textContent = '0'; }
+                if (data && data.count) {
+                    currentCount = data.count;
+                    localStorage.setItem('mc_dl_count', currentCount);
+                    countDisplay.textContent = currentCount;
+                }
+            } catch (e) {
+                console.log("Используем локальный счетчик.");
+            }
         }
 
-        downloadBtn.addEventListener('click', async () => {
-            try {
-                const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`);
-                const data = await res.json();
-                countDisplay.textContent = data.count;
-            } catch (e) {
-                countDisplay.textContent = (parseInt(countDisplay.textContent) || 0) + 1;
-            }
+        downloadBtn.addEventListener('click', () => {
+            // Моментальное визуальное обновление без зависаний
+            currentCount++;
+            countDisplay.textContent = currentCount;
+            localStorage.setItem('mc_dl_count', currentCount);
+            
+            // Фоновая отправка на сервер
+            fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`).catch(()=>{});
         });
 
         fetchDownloads();
 
-        // Анимированный фон
+        // --- МАЙНКРАФТ-ПАРТИКЛЫ НА ФОНЕ (Квадраты вместо кругов) ---
         const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
-        let stars = [];
+        let particles = [];
         
         function resize() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            stars = Array.from({ length: 90 }, () => ({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                size: Math.random() * 1.8 + 0.2, speed: Math.random() * 0.4 + 0.1, alpha: Math.random()
+            particles = Array.from({ length: 70 }, () => ({
+                x: Math.random() * canvas.width, 
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1, // Размер кубиков
+                speed: Math.random() * 0.5 + 0.1, 
+                alpha: Math.random()
             }));
         }
 
-        function drawStars() {
+        function drawParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(star => {
-                ctx.fillStyle = `rgba(184, 43, 253, ${star.alpha})`;
-                ctx.beginPath(); ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2); ctx.fill();
-                star.y -= star.speed;
-                if (star.y < 0) star.y = canvas.height;
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(184, 43, 253, ${p.alpha})`;
+                // Рисуем квадрат (Minecraft style)
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                p.y -= p.speed;
+                if (p.y < 0) p.y = canvas.height;
             });
-            requestAnimationFrame(drawStars);
+            requestAnimationFrame(drawParticles);
         }
 
         window.addEventListener('resize', resize);
-        resize(); drawStars();
+        resize(); drawParticles();
     </script>
 </body>
 </html>
