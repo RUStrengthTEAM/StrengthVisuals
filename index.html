@@ -126,14 +126,14 @@
         <section class="hero">
             <div class="beta-warning">
                 <strong>⚠️ EARLY BETA (v0.1.0 | Build 51)</strong><br>
-                Мод находится на стадии активной разработки. Присутствует много багов и недоработок. Некоторые функции были сделаны на скорую руку и могут работать нестабильно. 
+                Мод находится на стадии активной разработки(НАЕБАЛ). Присутствует много багов и недоработок. Некоторые функции были сделаны на скорую руку и могут работать нестабильно(клапан от мода расхуярит). 
             </div>
             
             <h1>Максимальный контроль над PvP</h1>
-            <p>Уникальные модули анимаций, Pulse Hand, точные проекции траекторий и гибкая система конфигов для Forge 1.16.5.</p>
+            <p>Уникальные модули анимаций, спизженные у пульса и еле как работающие, Hand, точные проекции траекторий(БЫЛА БЫ ЕСЛИ БЫ РАБОТАЛА) и гибкая система конфигов для Forge 1.16.5.</p>
             
             <div class="actions">
-                <a href="strengthvisuals-0.1.0.jar" download class="btn btn-main" id="downloadBtn">
+                <a href="StrengthVisuals-b0.1.0.51.jar" download class="btn btn-main" id="downloadBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     Скачать Мод
                 </a>
@@ -149,21 +149,20 @@
         </section>
 
         <section class="features">
-            <div class="card"><h3>Custom Hand & Overlay</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula).</p></div>
-            <div class="card"><h3>Physics Predictions</h3><p>Точный математический просчет траекторий жемчугов Края и стрел с маркером приземления.</p></div>
+            <div class="card"><h3>Custom Hand & Overlay</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula ХУЕТА).</p></div>
+            <div class="card"><h3>Physics Predictions</h3><p>Точный математический просчет траекторий жемчугов Края и стрел с маркером приземления(СУПЕР БАГАНАЯ и показывает куда то в пиздень).</p></div>
             <div class="card"><h3>Cloud Config Engine</h3><p>Мгновенное сохранение и смена профилей прямо в меню с автозагрузкой при старте.</p></div>
         </section>
     </main>
 
     <script>
-        // --- БЕССМЕРТНЫЙ СЧЕТЧИК СКАЧИВАНИЙ ---
+        
         const NAMESPACE = 'rustrength_v1';
         const KEY = 'downloads_total';
         const countDisplay = document.getElementById('downloadCount');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // Берем цифру из памяти браузера, если API отвалится (база 156 загрузок)
-        let currentCount = parseInt(localStorage.getItem('mc_dl_count')) || 156; 
+        let currentCount = parseInt(localStorage.getItem('mc_dl_count')) || 18; 
         countDisplay.textContent = currentCount;
 
         async function fetchDownloads() {
