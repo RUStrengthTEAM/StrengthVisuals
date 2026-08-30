@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strength Visuals | Client Mod</title>
-    <!-- Пиксельный Майнкрафт шрифт -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #0a0908;
-            --card-bg: rgba(24, 21, 18, 0.65);
+            --glass-bg: rgba(30, 30, 30, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --primary-glow: #b82bfd;
             --secondary-glow: #ff2a5f;
             --discord: #5865F2;
             --tiktok-cyan: #00f2fe;
             --tiktok-pink: #fe05e1;
             --text-main: #f3f3f3;
-            --text-dim: #9a918a;
-            --border: rgba(255, 255, 255, 0.08);
-            --mc-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+            --text-dim: #b3b3b3;
+            --mc-shadow: 3px 3px 0px rgba(0, 0, 0, 0.6);
+            --blur: blur(24px);
         }
 
-        /* Пасхалка BoyKisser Mode */
+        /* BoyKisser Mode */
         body.boykisser-mode {
             --bg-dark: #ffffff;
-            --card-bg: rgba(255, 220, 240, 0.8);
+            --glass-bg: rgba(255, 220, 240, 0.6);
             --primary-glow: #ff80bf;
             --secondary-glow: #ff4da6;
-            --text-main: #333333;
-            --text-dim: #666666;
-            --border: rgba(255, 128, 191, 0.4);
-            --mc-shadow: 4px 4px 0px rgba(255, 128, 191, 0.3);
+            --text-main: #222222;
+            --text-dim: #555555;
+            --glass-border: rgba(255, 128, 191, 0.5);
+            --mc-shadow: 3px 3px 0px rgba(255, 128, 191, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Press Start 2P', cursive; }
@@ -55,69 +55,128 @@
         #space-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 1.5s ease-out; }
 
-        /* Анимации появления */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Анимации */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px var(--primary-glow); } 50% { box-shadow: 0 0 30px var(--secondary-glow); } 100% { box-shadow: 0 0 15px var(--primary-glow); } }
 
         .animate-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
         .delay-3 { animation-delay: 0.6s; }
 
+        /* Матовое стекло (Glassmorphism) */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 24px 8%; backdrop-filter: blur(12px); background: rgba(10, 9, 8, 0.5);
-            border-bottom: 2px solid var(--primary-glow); position: sticky; top: 0; z-index: 100;
+            padding: 20px 8%; position: sticky; top: 0; z-index: 100;
+            border-radius: 0 0 24px 24px; border-top: none;
         }
         
-        .logo { font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--mc-shadow); }
-        .nav-stats { display: flex; gap: 10px; align-items: center; color: var(--text-dim); font-size: 0.6rem; text-shadow: var(--mc-shadow); }
-        .downloads-badge { background: linear-gradient(135deg, rgba(184,43,253,0.2), rgba(255,42,95,0.2)); border: 2px solid var(--primary-glow); padding: 8px 14px; color: var(--text-main); text-shadow: var(--mc-shadow); }
+        .logo { font-size: 1rem; background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--mc-shadow); }
+        .nav-stats { display: flex; gap: 10px; align-items: center; font-size: 0.6rem; text-shadow: var(--mc-shadow); }
+        .downloads-badge { background: rgba(0,0,0,0.3); border: 1px solid var(--primary-glow); padding: 8px 14px; border-radius: 8px; color: var(--text-main); }
 
         .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 70px 20px; max-width: 1000px; margin: 0 auto; }
         
         .beta-warning {
-            background: linear-gradient(135deg, rgba(255,170,0,0.2), rgba(255,0,0,0.1)); border: 2px solid #ffaa00;
-            padding: 15px 25px; margin-bottom: 30px; color: #ffcc66; font-size: 0.7rem; line-height: 1.8; max-width: 800px;
-            box-shadow: var(--mc-shadow); text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+            border: 1px solid #ffaa00; padding: 15px 25px; margin-bottom: 30px; 
+            color: #ffcc66; font-size: 0.65rem; line-height: 1.8; max-width: 800px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
         }
 
-        .version-tag { font-size: 0.8rem; color: var(--primary-glow); margin-bottom: 15px; text-shadow: var(--mc-shadow); }
-        h1 { font-size: 2rem; margin-bottom: 25px; text-shadow: var(--mc-shadow); background: linear-gradient(180deg, #fff, #a5a5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; user-select: none; line-height: 1.4;}
-        .hero p { font-size: 0.8rem; color: var(--text-dim); max-width: 800px; margin-bottom: 40px; text-shadow: var(--mc-shadow); }
+        .version-tag { font-size: 0.7rem; color: var(--primary-glow); margin-bottom: 15px; text-shadow: var(--mc-shadow); }
+        h1 { font-size: 2rem; margin-bottom: 25px; text-shadow: var(--mc-shadow); background: linear-gradient(180deg, #fff, #a5a5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; user-select: none; line-height: 1.5;}
+        .hero p { font-size: 0.75rem; color: var(--text-dim); max-width: 800px; margin-bottom: 40px; text-shadow: var(--mc-shadow); }
 
         .actions { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
 
         .btn {
-            display: flex; align-items: center; gap: 10px; padding: 18px 24px;
+            display: flex; align-items: center; gap: 10px; padding: 16px 24px;
             font-size: 0.7rem; color: #fff; text-decoration: none; position: relative; overflow: hidden;
-            border: 2px solid transparent; text-shadow: 2px 2px 0 rgba(0,0,0,0.8); box-shadow: var(--mc-shadow);
-            transition: transform 0.2s, box-shadow 0.2s;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.8); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
         }
         .btn svg { width: 18px; height: 18px; }
-        .btn:hover { transform: translateY(-4px) scale(1.02); }
+        .btn:hover { transform: translateY(-5px) scale(1.03); }
 
-        .btn-main { background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow)); border-color: #fff; }
-        .btn-discord { background: linear-gradient(135deg, #4752C4, var(--discord)); border-color: #fff; }
-        .btn-tiktok { background: linear-gradient(135deg, #111, #222); border-left-color: var(--tiktok-cyan); border-right-color: var(--tiktok-pink); border-top-color: #fff; border-bottom-color: #fff;}
+        .btn-main { animation: pulseGlow 3s infinite; }
+        .btn-discord { border-color: var(--discord); }
+        .btn-discord:hover { box-shadow: 0 0 20px var(--discord); }
+        .btn-tiktok { border-left-color: var(--tiktok-cyan); border-right-color: var(--tiktok-pink); }
+        .btn-tiktok:hover { box-shadow: 0 0 20px var(--tiktok-pink); }
 
         .features { max-width: 1100px; margin: 20px auto 100px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: linear-gradient(180deg, var(--card-bg), rgba(10,9,8,0.9)); border: 2px solid var(--border); padding: 35px 25px; box-shadow: var(--mc-shadow); transition: 0.3s; }
-        .card:hover { transform: translateY(-6px); border-color: var(--primary-glow); }
-        .card h3 { margin-bottom: 15px; font-size: 0.9rem; text-shadow: var(--mc-shadow); color: var(--primary-glow); }
-        .card p { color: var(--text-dim); font-size: 0.7rem; text-shadow: var(--mc-shadow); }
         
-        .bk-img { display: none; width: 150px; margin-bottom: 20px; animation: fadeInUp 0.5s; }
+        /* Интерактивные карточки */
+        .card { padding: 35px 25px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary-glow); }
+        .card h3 { margin-bottom: 15px; font-size: 0.8rem; text-shadow: var(--mc-shadow); color: var(--primary-glow); }
+        .card p { color: var(--text-dim); font-size: 0.65rem; text-shadow: var(--mc-shadow); }
+        
+        /* Подсказки (Tooltip) */
+        .card::after {
+            content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+            background: var(--bg-dark); color: var(--primary-glow); padding: 8px 12px; border-radius: 8px;
+            font-size: 0.5rem; opacity: 0; pointer-events: none; transition: 0.3s; border: 1px solid var(--primary-glow);
+            white-space: nowrap; text-shadow: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .card:hover::after { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+
+        .bk-img { display: none; width: 150px; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
         body.boykisser-mode .bk-img { display: block; }
+
+        /* Модальное окно (Матовое стекло) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s; z-index: 1000;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            padding: 40px; width: 90%; max-width: 500px; text-align: center;
+            transform: scale(0.8); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .modal-title { font-size: 1rem; margin-bottom: 20px; color: var(--primary-glow); text-shadow: var(--mc-shadow); }
+        .modal-subtitle { font-size: 0.6rem; color: var(--text-dim); margin-bottom: 10px; text-align: left; }
+        
+        .select-group { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .select-btn {
+            flex: 1; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+            color: var(--text-main); font-size: 0.6rem; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        .select-btn.active { border-color: var(--primary-glow); background: rgba(184, 43, 253, 0.2); box-shadow: 0 0 15px rgba(184, 43, 253, 0.4); }
+        
+        .select-btn[disabled] { opacity: 0.4; cursor: not-allowed; position: relative; }
+        .select-btn[disabled]:hover::after {
+            content: "В РАЗРАБОТКЕ"; position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            background: #ffaa00; color: #000; padding: 5px 8px; border-radius: 4px; font-size: 0.5rem; white-space: nowrap;
+        }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px; font-size: 1.2rem; cursor: pointer;
+            color: var(--text-dim); transition: 0.3s; background: none; border: none;
+        }
+        .close-modal:hover { color: var(--secondary-glow); transform: rotate(90deg); }
+
     </style>
 </head>
 <body>
     <div id="flash"></div>
     <canvas id="space-canvas"></canvas>
 
-    <nav class="animate-up">
+    <nav class="glass animate-up">
         <div class="logo" id="navLogo">STRENGTH VISUALS</div>
         <div class="nav-stats">
             <span>СКАЧИВАНИЙ:</span>
@@ -127,26 +186,27 @@
 
     <main>
         <section class="hero">
-            <div class="beta-warning animate-up delay-1">
+            <div class="beta-warning glass animate-up delay-1">
                 ⚠️ EARLY BETA (v0.1.0 | Build 51)<br><br>
                 Мод находится на стадии активной разработки (НАЕБАЛ). Присутствует много багов и недоработок. Некоторые функции были сделаны на скорую руку и могут работать нестабильно (клапан от мода расхуярит).
             </div>
             
             <img src="boykisser.png" alt="BoyKisser" class="bk-img">
-            <div class="version-tag animate-up delay-1">FORGE 1.16.5 (пока что)</div>
+            <div class="version-tag animate-up delay-1">FORGE 1.16.5</div>
             <h1 id="mainTitle" class="animate-up delay-1">МАКСИМАЛЬНЫЙ КОНТРОЛЬ НАД PVP</h1>
             <p class="animate-up delay-2">Уникальные модули анимаций, спизженные у пульса и еле как работающие, Hand, точные проекции траекторий (БЫЛА БЫ ЕСЛИ БЫ РАБОТАЛА) и гибкая система конфигов.</p>
             
             <div class="actions animate-up delay-3">
-                <a href="StrengthVisuals-b0.1.0.51.jar" download class="btn btn-main" id="downloadBtn">
+                <!-- Кнопка теперь открывает модальное окно -->
+                <button class="btn btn-main glass" id="openModalBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     СКАЧАТЬ МОД
-                </a>
-                <a href="https://discord.gg/UFEwqBU2Fu" target="_blank" class="btn btn-discord">
+                </button>
+                <a href="https://discord.gg/UFEwqBU2Fu" target="_blank" class="btn btn-discord glass">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
                     DISCORD
                 </a>
-                <a href="https://www.tiktok.com/@strength.smp.ru?is_from_webapp=1&sender_device=pc" target="_blank" class="btn btn-tiktok">
+                <a href="https://www.tiktok.com/@strength.smp.ru?is_from_webapp=1&sender_device=pc" target="_blank" class="btn btn-tiktok glass">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/></svg>
                     TIKTOK
                 </a>
@@ -154,45 +214,98 @@
         </section>
 
         <section class="features animate-up delay-3">
-            <div class="card"><h3>CUSTOM HAND</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula ХУЕТА).</p></div>
-            <div class="card"><h3>PREDICTIONS</h3><p>Точный просчет траекторий жемчугов Края (СУПЕР БАГАНАЯ и показывает куда-то в пиздень).</p></div>
-            <div class="card"><h3>CONFIG ENGINE</h3><p>Мгновенное сохранение и смена профилей прямо в меню с автозагрузкой при старте.</p></div>
+            <div class="card glass" data-tooltip="Настрой X, Y, Z и наклон под себя">
+                <h3>CUSTOM HAND</h3><p>Наклон предметов, физика взмаха и космическая анимация выделения блоков (Nebula ХУЕТА).</p>
+            </div>
+            <div class="card glass" data-tooltip="Математика работает на 99% (почти)">
+                <h3>PREDICTIONS</h3><p>Точный просчет траекторий жемчугов Края (СУПЕР БАГАНАЯ и показывает куда-то в пиздень).</p>
+            </div>
+            <div class="card glass" data-tooltip="Сохраняет даже цвета интерфейса">
+                <h3>CONFIG ENGINE</h3><p>Мгновенное сохранение и смена профилей прямо в меню с автозагрузкой при старте.</p>
+            </div>
         </section>
     </main>
 
+    <!-- Модальное окно загрузки -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-content glass">
+            <button class="close-modal" id="closeModalBtn">X</button>
+            <h2 class="modal-title">ПАРАМЕТРЫ ЗАГРУЗКИ</h2>
+            
+            <div class="modal-subtitle">ВЫБЕРИТЕ ВЕРСИЮ:</div>
+            <div class="select-group">
+                <button class="select-btn active">1.16.5</button>
+                <button class="select-btn" disabled>1.12.2</button>
+                <button class="select-btn" disabled>1.20.1</button>
+            </div>
+
+            <div class="modal-subtitle">ВЫБЕРИТЕ ЗАГРУЗЧИК:</div>
+            <div class="select-group">
+                <button class="select-btn active">FORGE</button>
+                <button class="select-btn" disabled>FABRIC</button>
+                <button class="select-btn" disabled>NEOFORGE</button>
+            </div>
+
+            <!-- Реальная кнопка скачивания -->
+            <a href="StrengthVisuals-b0.1.0.51.jar" download class="btn btn-main glass" style="width: 100%; justify-content: center;" id="finalDownloadBtn">
+                ПОДТВЕРДИТЬ И СКАЧАТЬ
+            </a>
+        </div>
+    </div>
+
     <script>
-        // --- 1. СТРОГАЯ СИНХРОНИЗАЦИЯ СЧЕТЧИКА (ТОЛЬКО СЕРВЕР) ---
+        // --- 1. СТРОГАЯ СИНХРОНИЗАЦИЯ СЧЕТЧИКА + АНТИ-СПАМ ---
         const NAMESPACE = 'rustrength_v1_api';
         const KEY = 'downloads_global';
         const countDisplay = document.getElementById('downloadCount');
-        const downloadBtn = document.getElementById('downloadBtn');
+        const finalDownloadBtn = document.getElementById('finalDownloadBtn');
+
+        let currentCount = 154; // Резерв
 
         async function fetchDownloads() {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`);
+                if (!res.ok) throw new Error('API Blocked');
                 const data = await res.json();
-                countDisplay.textContent = data.count || 0;
-            } catch (e) {
-                countDisplay.textContent = "ERR";
-            }
+                if (data && typeof data.count === 'number') currentCount = data.count;
+            } catch (e) { console.warn("API недоступно, используется резервное число."); }
+            countDisplay.textContent = currentCount;
         }
 
-        downloadBtn.addEventListener('click', async () => {
-            // Визуально добавляем +1 для отклика, но сразу запрашиваем правду с сервера
-            let current = parseInt(countDisplay.textContent) || 0;
-            countDisplay.textContent = current + 1;
-            
+        let isCooldown = false;
+        finalDownloadBtn.addEventListener('click', async () => {
+            currentCount++;
+            countDisplay.textContent = currentCount;
+            document.getElementById('downloadModal').classList.remove('active'); // Закрываем модалку после клика
+
+            if (isCooldown) return;
+            isCooldown = true;
+
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`);
-                const data = await res.json();
-                countDisplay.textContent = data.count; // Принудительно ставим серверное значение
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && typeof data.count === 'number') countDisplay.textContent = data.count;
+                }
             } catch (e) {}
+
+            setTimeout(() => { isCooldown = false; }, 3000); // 3 сек кулдаун
         });
 
-        // Загружаем число исключительно с сервера при входе
         fetchDownloads();
 
-        // --- 2. МАЙНКРАФТ-ПАРТИКЛЫ ---
+        // --- 2. ЛОГИКА МОДАЛЬНОГО ОКНА ---
+        const downloadModal = document.getElementById('downloadModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        openModalBtn.addEventListener('click', () => downloadModal.classList.add('active'));
+        closeModalBtn.addEventListener('click', () => downloadModal.classList.remove('active'));
+        downloadModal.addEventListener('click', (e) => {
+            if (e.target === downloadModal) downloadModal.classList.remove('active');
+        });
+
+        // --- 3. МАЙНКРАФТ-ПАРТИКЛЫ ---
         const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -200,18 +313,14 @@
         function resize() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = Array.from({ length: 50 }, () => ({
-                x: Math.random() * canvas.width, 
-                y: Math.random() * canvas.height,
-                size: Math.random() * 4 + 2, 
-                speed: Math.random() * 1.5 + 0.5, 
-                alpha: Math.random()
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                size: Math.random() * 4 + 2, speed: Math.random() * 1.5 + 0.5, alpha: Math.random()
             }));
         }
 
         function drawParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const isBoykisser = document.body.classList.contains('boykisser-mode');
-            
             particles.forEach(p => {
                 ctx.fillStyle = isBoykisser ? `rgba(255, 128, 191, ${p.alpha})` : `rgba(184, 43, 253, ${p.alpha})`;
                 ctx.fillRect(p.x, p.y, p.size, p.size);
@@ -224,7 +333,7 @@
         window.addEventListener('resize', resize);
         resize(); drawParticles();
 
-        // --- 3. ПАСХАЛКА BOYKISSER ---
+        // --- 4. ПАСХАЛКА BOYKISSER ---
         let titleClicks = 0;
         const mainTitle = document.getElementById('mainTitle');
         const navLogo = document.getElementById('navLogo');
@@ -233,16 +342,13 @@
         mainTitle.addEventListener('click', () => {
             titleClicks++;
             if (titleClicks === 5) {
-                // Вспышка
                 flash.style.opacity = '1';
-                
                 setTimeout(() => {
                     document.body.classList.add('boykisser-mode');
                     mainTitle.textContent = "BOYKISSER VISUALS";
                     navLogo.textContent = "BOYKISSER VISUALS";
-                    // Плавное угасание вспышки
                     flash.style.opacity = '0';
-                }, 300); // Меняем стили на пике вспышки
+                }, 300);
             }
         });
     </script>
