@@ -180,7 +180,7 @@
         <div class="logo" id="navLogo">STRENGTH VISUALS</div>
         <div class="nav-stats">
             <span>СКАЧИВАНИЙ:</span>
-            <div class="downloads-badge" id="downloadCount">???</div>
+            <div class="downloads-badge" id="downloadCount">154</div>
         </div>
     </nav>
 
@@ -197,7 +197,6 @@
             <p class="animate-up delay-2">Уникальные модули анимаций, спизженные у пульса и еле как работающие, Hand, точные проекции траекторий (БЫЛА БЫ ЕСЛИ БЫ РАБОТАЛА) и гибкая система конфигов.</p>
             
             <div class="actions animate-up delay-3">
-                <!-- Кнопка теперь открывает модальное окно -->
                 <button class="btn btn-main glass" id="openModalBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     СКАЧАТЬ МОД
@@ -254,59 +253,56 @@
         </div>
     </div>
 
-    <script>
-        // --- 1. СТРОГАЯ СИНХРОНИЗАЦИЯ СЧЕТЧИКА + АНТИ-СПАМ ---
-        const NAMESPACE = 'rustrength_v1_api';
-        const KEY = 'downloads_global';
+    <!-- Обновленный скрипт с Firebase (счетчик скачиваний) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        // --- 1. ПОДКЛЮЧЕНИЕ К FIREBASE ---
+        const firebaseConfig = {
+            databaseURL: "https://strengthvisuals-1-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const countRef = ref(db, 'downloads');
+
+        // Элементы
         const countDisplay = document.getElementById('downloadCount');
         const finalDownloadBtn = document.getElementById('finalDownloadBtn');
-
-        let currentCount = 154; // Резерв
-
-        async function fetchDownloads() {
-            try {
-                const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`);
-                if (!res.ok) throw new Error('API Blocked');
-                const data = await res.json();
-                if (data && typeof data.count === 'number') currentCount = data.count;
-            } catch (e) { console.warn("API недоступно, используется резервное число."); }
-            countDisplay.textContent = currentCount;
-        }
-
-        let isCooldown = false;
-        finalDownloadBtn.addEventListener('click', async () => {
-            currentCount++;
-            countDisplay.textContent = currentCount;
-            document.getElementById('downloadModal').classList.remove('active'); // Закрываем модалку после клика
-
-            if (isCooldown) return;
-            isCooldown = true;
-
-            try {
-                const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && typeof data.count === 'number') countDisplay.textContent = data.count;
-                }
-            } catch (e) {}
-
-            setTimeout(() => { isCooldown = false; }, 3000); // 3 сек кулдаун
-        });
-
-        fetchDownloads();
-
-        // --- 2. ЛОГИКА МОДАЛЬНОГО ОКНА ---
         const downloadModal = document.getElementById('downloadModal');
         const openModalBtn = document.getElementById('openModalBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
 
+        // --- 2. ЛОГИКА СЧЕТЧИКА СКАЧИВАНИЙ ---
+        // Получаем актуальное число из БД в реальном времени
+        onValue(countRef, (snapshot) => {
+            countDisplay.textContent = snapshot.val() || 154; // 154 как стартовое число (если БД пустая)
+        });
+
+        let isCooldown = false;
+        finalDownloadBtn.addEventListener('click', () => {
+            downloadModal.classList.remove('active'); // Закрываем модалку после клика
+
+            if (isCooldown) return;
+            isCooldown = true;
+
+            // Надежно прибавляем +1 к базе (защита от багов, если два чела кликнут одновременно)
+            runTransaction(countRef, (currentData) => {
+                return (currentData || 0) + 1;
+            });
+
+            setTimeout(() => { isCooldown = false; }, 3000); // 3 секунды кулдауна от спама кликами
+        });
+
+        // --- 3. ЛОГИКА МОДАЛЬНОГО ОКНА ---
         openModalBtn.addEventListener('click', () => downloadModal.classList.add('active'));
         closeModalBtn.addEventListener('click', () => downloadModal.classList.remove('active'));
         downloadModal.addEventListener('click', (e) => {
             if (e.target === downloadModal) downloadModal.classList.remove('active');
         });
 
-        // --- 3. МАЙНКРАФТ-ПАРТИКЛЫ ---
+        // --- 4. МАЙНКРАФТ-ПАРТИКЛЫ НА ФОНЕ ---
         const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -334,7 +330,7 @@
         window.addEventListener('resize', resize);
         resize(); drawParticles();
 
-        // --- 4. ПАСХАЛКА BOYKISSER ---
+        // --- 5. ПАСХАЛКА BOYKISSER ---
         let titleClicks = 0;
         const mainTitle = document.getElementById('mainTitle');
         const navLogo = document.getElementById('navLogo');
